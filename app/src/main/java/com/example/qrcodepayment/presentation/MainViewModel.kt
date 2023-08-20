@@ -26,13 +26,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.sql.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repo: MainRepo,
     private val scannedDataDao: ScannedDataDao,
-    private val context: Context
+    private val context: Context,
+
 
     ):ViewModel() {
 
@@ -75,22 +79,25 @@ class MainViewModel @Inject constructor(
                 val name = qrDataList[2].substringAfter(":").trim()
                 val transaction = qrDataList[3].substringAfter(":").trim()
 
+                val currentTimeMillis =
+                    System.currentTimeMillis() // Mendapatkan waktu saat ini dalam bentuk millisecond since epoch
+
                 val insertedId = scannedDataDao.insertScannedData(
-                    ScannedData(bank = bank, name = name, transaction = transaction)
+                    ScannedData(
+                        bank = bank,
+                        name = name,
+                        transaction = transaction,
+                        date = currentTimeMillis
+                    )
                 )
             }
         }
     }
 
-    //Pemanggilan Data LazyColumn
-    fun fetchAllData() {
-        viewModelScope.launch {
-            val allData = withContext(Dispatchers.IO) {
-                scannedDataDao.getAll()
-            }
-            // Tambahkan Log.d statement untuk mencetak nilai dari variabel allData
-            Log.d("Check Data", "allData: $allData")
-        }
+     fun formatMillisToMonthAndDay(millis: Long): String {
+        val sdf = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
+        val date = Date(millis)
+        return sdf.format(date)
     }
 
     //SharedPrefences Money

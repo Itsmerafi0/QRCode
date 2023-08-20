@@ -38,6 +38,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.example.qrcodepayment.controller.API
 import com.example.qrcodepayment.controller.MainActivity
+import java.sql.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 @Composable
@@ -133,8 +136,9 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
 
             if (detailList.isNotEmpty()) {
                 items(items = detailList) { dtl ->
+                    val formattedDate = viewModel.formatMillisToMonthAndDay(dtl.date)
                     Row(Modifier.fillMaxWidth()) {
-                        TableCell(text = dtl.name, weight = column1Weight)
+                        TableCell(text = "$formattedDate\n${dtl.name}", weight = column1Weight)
                         TableCell(text = "IDR ${dtl.transaction}", weight = column2Weight)
                     }
                     Divider(thickness = 1.dp)
@@ -143,6 +147,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
         }
     }
 }
+
 
 @Composable
 fun RowScope.TableCell(
