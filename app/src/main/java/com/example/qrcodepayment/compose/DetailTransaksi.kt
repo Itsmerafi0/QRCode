@@ -14,11 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,10 +40,13 @@ import com.example.qrcodepayment.presentation.TableCell
 
 
 
+
 @Composable
 fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  scannedData: String? ) {
     val context = LocalContext.current
     val state = viewModel.state.collectAsState()
+    var isPaymentConfirmationVisible by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -96,15 +105,7 @@ fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  
 
         Button(
             onClick = {
-                val nonNullableScannedData = scannedData ?: ""
-                viewModel.saveToDatabase(nonNullableScannedData)
-
-                val newAmount = viewModel.money.value - (data?.split(".")?.get(3)?.toInt() ?: 0)
-                viewModel.updateMoney(newAmount)
-
-                val intent = Intent(context, Payment::class.java)
-                intent.putExtra("scannedData", nonNullableScannedData)
-                context.startActivity(intent)
+                isPaymentConfirmationVisible = true
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20),
@@ -116,6 +117,45 @@ fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  
                     textAlign = TextAlign.Center
                 )
             }
+        }
+
+        //Pop Konfirmasi Pembayaran
+        if (isPaymentConfirmationVisible) {
+            AlertDialog(
+                onDismissRequest = { isPaymentConfirmationVisible = false },
+                title = {
+                    Text("Konfirmasi Pembayaran")
+                },
+                text = {
+                    Text("Apakah Anda yakin ingin melakukan pembayaran?")
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val nonNullableScannedData = scannedData ?: ""
+                        viewModel.saveToDatabase(nonNullableScannedData)
+
+                        //Mengurangi Money
+                        val newAmount = viewModel.money.value - (data?.split(".")?.get(3)?.toInt() ?: 0)
+                        viewModel.updateMoney(newAmount)
+
+                        val intent = Intent(context, Payment::class.java)
+                        //Mengirim Data berupa String
+                        intent.putExtra("scannedData", nonNullableScannedData)
+                        context.startActivity(intent)
+
+                        isPaymentConfirmationVisible = false
+                    }) {
+                        Text("Ya")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        isPaymentConfirmationVisible = false
+                    }) {
+                        Text("Batal")
+                    }
+                }
+            )
         }
 
 
