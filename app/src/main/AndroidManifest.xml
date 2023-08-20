@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
@@ -14,16 +16,29 @@
         android:theme="@style/Theme.QrCodePayment"
         tools:targetApi="31">
         <activity
+            android:name=".controller.API"
+            android:exported="false"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
             android:name=".controller.Detail"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".controller.PromoDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".controller.Payment"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".controller.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.QrCodePayment">
+            android:theme="@style/Theme.QrCodePayment"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

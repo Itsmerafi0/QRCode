@@ -1,6 +1,7 @@
 package com.example.qrcodepayment.presentation
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import com.example.qrcodepayment.controller.API
+import com.example.qrcodepayment.controller.MainActivity
 
 
 @Composable
@@ -83,6 +86,25 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             }
         }
 
+        Divider(thickness = 1.dp)
+
+        Button(
+            onClick = {
+                val intent = Intent(context, API::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier
+                .fillMaxWidth().padding(bottom = 15.dp), // Add some top padding
+            shape = RoundedCornerShape(20),
+        ) {
+            Box {
+                Text(
+                    text = "Promo BNI",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
 
         Divider(thickness = 1.dp)
         Text(

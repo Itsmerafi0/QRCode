@@ -16,6 +16,7 @@ interface ScannedDataDao {
     @Query("SELECT * FROM scanned_data")
     fun getAll(): LiveData<List<ScannedData>>
 
+
 }
 
 
