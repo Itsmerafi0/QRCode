@@ -16,6 +16,7 @@ class Detail : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Mengambil Data berupa String
         val scannedData = intent.getStringExtra("scannedData")
 
         setContent {

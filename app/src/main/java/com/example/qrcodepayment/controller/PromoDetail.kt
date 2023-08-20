@@ -37,13 +37,14 @@ class PromoDetail : ComponentActivity() {
                         PromoList(navController = navController, viewModel = mainViewModel)
                     }
                     composable(
+                        //Onclick Berdasarkan promoId
                         route = "promoDetail/{promoId}",
                         arguments = listOf(navArgument("promoId") { type = NavType.StringType })
                     ) { backStackEntry ->
-                        // Retrieve promoId from the route arguments
+
                         val promoId = backStackEntry.arguments?.getString("promoId") ?: ""
 
-                        // Display PromoDetailScreen and pass the promoId to the ViewModel
+                        // Display DetailPromo and pass the promoId to the ViewModel
                         DetailPromo(promoId = promoId, viewModel = hiltViewModel())
                     }
                 }

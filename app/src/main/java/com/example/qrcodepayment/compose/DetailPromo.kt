@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -32,7 +33,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import com.example.qrcodepayment.controller.API
 import com.example.qrcodepayment.controller.MainActivity
 import com.example.qrcodepayment.data.API.Promo
 import com.example.qrcodepayment.presentation.MainViewModel
@@ -50,9 +53,16 @@ fun DetailPromo(promoId: String, viewModel: MainViewModel = hiltViewModel()) {
         topBar = {
             TopAppBar(
                 title = {
+                    Image(
+                        painter = rememberAsyncImagePainter("https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(0.dp),
+                    )
                     Text(
                         text = "Detail Promo",
-                        modifier = Modifier.fillMaxWidth(), // Center-align the text
+                        modifier = Modifier.fillMaxWidth().padding(top = 50.dp), // Center-align the text
                         style = MaterialTheme.typography.titleLarge, // Apply a suitable typography style
                         textAlign = TextAlign.Center
                     )
@@ -107,7 +117,7 @@ fun DetailPromo(promoId: String, viewModel: MainViewModel = hiltViewModel()) {
 
             Button(
                 onClick = {
-                    val intent = Intent(context, MainActivity::class.java)
+                    val intent = Intent(context, API::class.java)
                     context.startActivity(intent)
                 },
                 modifier = Modifier

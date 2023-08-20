@@ -35,6 +35,7 @@ class API : ComponentActivity() {
                         PromoList(navController = navController, viewModel = viewModel)
                     }
                     composable(
+                        //promoDetail Click By Id
                         route = "promoDetail/{promoId}",
                         arguments = listOf(navArgument("promoId") { type = NavType.StringType })
                     ) { backStackEntry ->

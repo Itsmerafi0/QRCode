@@ -36,6 +36,7 @@ class MainViewModel @Inject constructor(
 
     ):ViewModel() {
 
+    //DataList API
     private val _promos = MutableStateFlow<List<Promo>>(emptyList())
     val promos: StateFlow<List<Promo>> = _promos
 
@@ -98,7 +99,7 @@ class MainViewModel @Inject constructor(
         return sharedPreferences.getInt("money", 1500000)
     }
 
-    //updateMoney Setiap Melakukan Scann Uang Berkurang
+    //updateMoney Setiap Melakukan Pembayaran Money Berkurang
     fun updateMoney(newAmount: Int) {
         val sharedPreferences = context.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
         sharedPreferences.edit().putInt("money", newAmount).apply()

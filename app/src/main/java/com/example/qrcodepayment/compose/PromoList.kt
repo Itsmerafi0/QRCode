@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.qrcodepayment.controller.API
 import com.example.qrcodepayment.controller.MainActivity
@@ -39,12 +40,19 @@ fun PromoList(navController: NavController, viewModel: MainViewModel) {
     Column {
         Box(
             modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
         ) {
+            Image(
+                painter = rememberAsyncImagePainter("https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(0.dp),
+            )
             Text(
                 text = "Promo BNI",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 40.dp), // Center-align the text
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
             )
         }
         LazyColumn {
