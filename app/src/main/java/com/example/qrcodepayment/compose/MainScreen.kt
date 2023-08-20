@@ -110,10 +110,10 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             }
 
             if (detailList.isNotEmpty()) {
-                items(items = detailList) { emp ->
+                items(items = detailList) { dtl ->
                     Row(Modifier.fillMaxWidth()) {
-                        TableCell(text = emp.name, weight = column1Weight)
-                        TableCell(text = "IDR ${emp.transaction}", weight = column2Weight)
+                        TableCell(text = dtl.name, weight = column1Weight)
+                        TableCell(text = "IDR ${dtl.transaction}", weight = column2Weight)
                     }
                     Divider(thickness = 1.dp)
                 }
