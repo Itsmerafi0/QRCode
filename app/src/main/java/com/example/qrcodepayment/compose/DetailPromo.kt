@@ -86,11 +86,18 @@ fun DetailPromo(promoId: String, viewModel: MainViewModel = hiltViewModel()) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                        top = 4.dp,
+                        end = 8.dp)
+                        .align(Alignment.End),
                     text = promo.value!!.nama,
                     style = MaterialTheme.typography.titleMedium, // Use a larger font size
-                    color = MaterialTheme.colorScheme.primary // Match the top bar color
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = promo.value!!.desc,
                     style = MaterialTheme.typography.titleMedium, // Use a smaller font size
@@ -98,9 +105,15 @@ fun DetailPromo(promoId: String, viewModel: MainViewModel = hiltViewModel()) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Lokasi: ${promo.value!!.lokasi}",
-                    style = MaterialTheme.typography.bodyMedium, // Use a smaller font size
-                    color = MaterialTheme.colorScheme.onSurface // Match text color to the background
+                    text = "Lokasi : ${promo.value!!.lokasi}",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = 4.dp,
+                            end = 8.dp)
+                        .align(Alignment.End),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.End
                 )
             }
 
@@ -126,7 +139,7 @@ fun DetailPromo(promoId: String, viewModel: MainViewModel = hiltViewModel()) {
             ) {
                 Box {
                     Text(
-                        text = "Back To Promo",
+                        text = "Back Promo",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                     )

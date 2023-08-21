@@ -1,20 +1,28 @@
 package com.example.qrcodepayment.compose
 
 import android.content.Intent
+import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -33,97 +41,107 @@ import com.example.qrcodepayment.presentation.MainViewModel
 fun PromoList(navController: NavController, viewModel: MainViewModel) {
     val promos by viewModel.promos.collectAsState(initial = emptyList())
     val context = LocalContext.current
+    val colorScheme = MaterialTheme.colorScheme
 
     LaunchedEffect(Unit) {
         viewModel.fetchPromos()
     }
-    Column {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter("https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(0.dp),
-            )
-            Text(
-                text = "Promo BNI",
-                modifier = Modifier.fillMaxWidth().padding(top = 40.dp), // Center-align the text
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-        LazyColumn {
-            items(promos.chunked(2)) { row ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    row.forEach { promo ->
-                        PromoCard(promo, navController)
-                    }
-                }
-            }
-        }
-        Column(
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter("https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png"),
+            contentDescription = null,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 0.dp, horizontal = 25.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalAlignment = Alignment.Start
+                .size(100.dp)
+                .padding(0.dp),
+        )
+        Text(
+            text = "Promo BNI",
+            modifier = Modifier.fillMaxWidth().padding(top = 0.dp), // Center-align the text
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            Divider(thickness = 2.dp)
-
-            Button(
-                onClick = {
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
-                },
-                modifier = Modifier
-                    .fillMaxWidth().padding(bottom = 15.dp), // Add some top padding
-                shape = RoundedCornerShape(20),
-            ) {
-                Box {
-                    Text(
-                        text = "Home",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+            items(promos) { promo ->
+                PromoAppCard(promo, navController)
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp),
+            shape = RoundedCornerShape(20),
+        ) {
+            Text(
+                text = "Ke Halaman Utama",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = colorScheme.onSecondary
+            )
         }
     }
-
 }
 
 @Composable
-fun PromoCard(promo: Promo, navController: NavController, modifier: Modifier = Modifier) {
-
+fun PromoAppCard(promo: Promo, navController: NavController, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
-            .padding(8.dp)
-            .width(180.dp)
+            .fillMaxWidth()
             .clickable {
                 navController.navigate("promoDetail/${promo.id}")
             },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp),
+            shape = RoundedCornerShape(8.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Image(
                 painter = rememberImagePainter(promo.img.url),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                    .graphicsLayer(
+                        scaleX = 1f, // No horizontal scaling
+                        scaleY = 1f // No vertical scaling
+                    )
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = promo.nama, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = promo.nama,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Lokasi : ${promo.lokasi}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .align(Alignment.End),
+                style = MaterialTheme.typography.bodyMedium,
+            )
         }
     }
 }
