@@ -1,6 +1,8 @@
 package com.example.qrcodepayment.compose
 
+import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +48,8 @@ fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  
     val context = LocalContext.current
     val state = viewModel.state.collectAsState()
     var isPaymentConfirmationVisible by remember { mutableStateOf(false) }
+    var showCancelConfirmationDialog by remember { mutableStateOf(false) }
+    var isPaymentCanceled by remember { mutableStateOf(false) }
 
 
     Column(
@@ -64,10 +68,12 @@ fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  
         )
         Divider(thickness = 1.dp)
 
-        Text(text = "Transaksi",
+        Text(
+            text = "Transaksi",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            fontSize = 24.sp)
+            fontSize = 24.sp
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         val column1Weight = .3f // 70%
@@ -135,9 +141,11 @@ fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  
                         viewModel.saveToDatabase(nonNullableScannedData)
 
                         //Mengurangi Money
-                        val newAmount = viewModel.money.value - (data?.split(".")?.get(3)?.toInt() ?: 0)
+                        val newAmount =
+                            viewModel.money.value - (data?.split(".")?.get(3)?.toInt() ?: 0)
                         viewModel.updateMoney(newAmount)
 
+                        Toast.makeText(context,"Payment Success", Toast.LENGTH_SHORT).show()
                         val intent = Intent(context, Payment::class.java)
                         //Mengirim Data berupa String
                         intent.putExtra("scannedData", nonNullableScannedData)
@@ -158,24 +166,70 @@ fun DetailTransaksi(viewModel: MainViewModel = hiltViewModel(), data: String?,  
             )
         }
 
-
         Button(
             onClick = {
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
+                showCancelConfirmationDialog = true
             },
             modifier = Modifier
-                .fillMaxWidth().padding(bottom = 15.dp), // Add some top padding
-            shape = RoundedCornerShape(20),
+                .fillMaxWidth()
+                .padding(bottom = 15.dp),
+            shape = RoundedCornerShape(20)
         ) {
-            Box {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    text = "Kembali",
-                    modifier = Modifier.fillMaxWidth(),
+                    text = "Cancel",
                     textAlign = TextAlign.Center
                 )
             }
         }
+
+        // Show the cancel payment confirmation dialog if the state is true
+        if (showCancelConfirmationDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    // Dismiss the dialog when clicked outside the dialog
+                    showCancelConfirmationDialog = false
+                },
+                title = {
+                    Text(text = "Konfirmasi Pembatalan")
+                },
+                text = {
+                    Text(text = "Apakah Anda yakin ingin membatalkan pembayaran ini?")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            // Logic to handle cancellation
+                            showCancelConfirmationDialog = false
+                            isPaymentCanceled = true
+                        }
+                    ) {
+                        Text(text = "Ya")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            // Dismiss the dialog without taking any action
+                            showCancelConfirmationDialog = false
+                        }
+                    ) {
+                        Text(text = "Tidak")
+                    }
+                }
+            )
+        }
+
+        // Navigate to MainActivity if payment is canceled
+        if (isPaymentCanceled) {
+            Toast.makeText(context,"Payment Failed", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 }
+
 
