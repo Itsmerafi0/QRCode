@@ -13,7 +13,7 @@ interface ScannedDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertScannedData(scannedData: ScannedData)
 
-    @Query("SELECT * FROM scanned_data")
+    @Query("SELECT * FROM scanned_data ORDER BY ID DESC")
     fun getAll(): LiveData<List<ScannedData>>
 
 
